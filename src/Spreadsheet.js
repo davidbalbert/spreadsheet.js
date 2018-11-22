@@ -18,6 +18,33 @@ function charRange(start, end) {
     return range(startCode, endCode).map(n => String.fromCharCode(n));
 }
 
+function classSet(obj) {
+  let a = [];
+
+  for (let k in obj) {
+    if (obj[k]) {
+      a.push(k);
+    }
+  }
+
+  return a.join(' ');
+}
+
+class Cell extends Component {
+  render() {
+    const { header, children } = this.props;
+
+    const className = classSet({
+      'spreadsheet__cell': true,
+      'spreadsheet__cell--header': header,
+    });
+
+    return (
+      <div className={className}>{children}</div>
+    )
+  }
+}
+
 const ROWS = range(1, 100);
 const COLS = charRange('A', 'Z');
 
@@ -30,22 +57,21 @@ class Spreadsheet extends Component {
     return (
       <div className="spreadsheet">
         <div className="spreadsheet__row">
-          <div className="spreadsheet__cell spreadsheet__cell--header"></div>
+          <Cell header />
           {
             COLS.map(c => (
-              <div className="spreadsheet__cell spreadsheet__cell--header">{c}</div>
+              <Cell key={c} header>{c}</Cell>
             ))
           }
         </div>
 
         {
           ROWS.map(r => (
-            <div className="spreadsheet__row">
-              <div className="spreadsheet__cell spreadsheet__cell--header">{r}</div>
-
+            <div key={r} className="spreadsheet__row">
+              <Cell header>{r}</Cell>
               {
                 COLS.map(c => (
-                  <div className="spreadsheet__cell"></div>
+                  <Cell key={`${c}${r}`} />
                 ))
               }
             </div>
