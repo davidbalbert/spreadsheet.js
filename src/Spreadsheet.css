@@ -1,0 +1,26 @@
+.spreadsheet {
+
+}
+
+.spreadsheet__row {
+  display: flex;
+}
+
+.spreadsheet__row:last-child {
+  border-bottom: 1px solid black;
+}
+
+.spreadsheet__cell {
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  width: 50px;
+  text-align: center;
+}
+
+.spreadsheet__cell:last-child {
+  border-right: 1px solid black;
+}
+
+.spreadsheet__cell--header {
+  background-color: #ddd;
+}
