@@ -126,12 +126,15 @@ class Cell extends Component {
   }
 
   render() {
-    const {header, children, selected} = this.props;
+    const {header, value, selected} = this.props;
+
+    const number = value && typeof value === "number";
 
     const className = classSet({
       'spreadsheet__cell': true,
       'spreadsheet__cell--header': header,
       'spreadsheet__cell--selected': selected,
+      'spreadsheet__cell--number': number && !header,
     });
 
     return (
@@ -139,7 +142,7 @@ class Cell extends Component {
         className={className}
         onClick={this.handleClick}
       >
-        {children}
+        {value}
       </div>
     )
   }
@@ -151,7 +154,11 @@ class Value {
   }
 
   get val() {
-    return this.src;
+    if (this.src.match(/^\d+(.\d+)?$/)) {
+      return parseFloat(this.src);
+    } else {
+      return this.src;
+    }
   }
 }
 
@@ -215,7 +222,7 @@ class Spreadsheet extends Component {
           <Cell header />
           {
             COLS.map(c => (
-              <Cell key={c} header>{c}</Cell>
+              <Cell key={c} value={c} header />
             ))
           }
         </div>
@@ -223,7 +230,7 @@ class Spreadsheet extends Component {
         {
           ROWS.map(r => (
             <div key={r} className="spreadsheet__row">
-              <Cell header>{r}</Cell>
+              <Cell value={r} header />
               {
                 COLS.map(c => (
                   <Cell
@@ -231,9 +238,8 @@ class Spreadsheet extends Component {
                     name={`${c}${r}`}
                     selected={selection === `${c}${r}`}
                     onClick={this.selectCell}
-                  >
-                    {data[`${c}${r}`] && data[`${c}${r}`].val}
-                  </Cell>
+                    value={data[`${c}${r}`] && data[`${c}${r}`].val}
+                  />
                 ))
               }
             </div>

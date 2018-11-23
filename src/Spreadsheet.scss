@@ -1,3 +1,7 @@
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
 }
@@ -16,7 +20,6 @@ body {
   border-left: 1px solid black;
   width: 50px;
   flex: 1;
-  text-align: center;
 
   &:last-child {
     border-right: 1px solid black;
@@ -31,6 +34,11 @@ body {
 
 .spreadsheet__cell--header {
   background-color: #ddd;
+  text-align: center;
+}
+
+.spreadsheet__cell--number {
+  text-align: right;
 }
 
 .spreadsheet__cell--selected {
