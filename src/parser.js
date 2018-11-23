@@ -84,12 +84,13 @@ const formulaSemantics = formulaGrammar.createSemantics().addOperation('eval', {
     return this.sourceString;
   }
 });
+
 class Value {
   constructor(src) {
     this.src = src;
   }
 
-  get val() {
+  eval() {
     if (this.src.match(/^\d+(\.\d+)?$/)) {
       return parseFloat(this.src);
     } else {
@@ -104,7 +105,7 @@ class Formula {
     this.match = match;
   }
 
-  get val() {
+  eval() {
     if (this.match.succeeded()) {
       return formulaSemantics(this.match).eval();
     } else {

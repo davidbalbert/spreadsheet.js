@@ -239,7 +239,7 @@ class Spreadsheet extends Component {
                       name={`${c}${r}`}
                       selection={selection}
                       onClick={this.selectCell}
-                      value={data[`${c}${r}`] && data[`${c}${r}`].val}
+                      value={data[`${c}${r}`] && data[`${c}${r}`].eval()}
                     />
                   ))
                 }
