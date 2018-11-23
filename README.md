@@ -17,3 +17,7 @@ With npm:
 $ npm install
 $ npm start
 ```
+
+## Usage
+
+Arrow keys navigate around the spreadsheet. Clicking works too. Enter focuses the formula editor. When you're in the formula editor, enter and escape focuses the spreadsheet.
