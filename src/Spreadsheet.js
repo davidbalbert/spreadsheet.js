@@ -132,7 +132,7 @@ const Keys = {
 class Spreadsheet extends Component {
   state = {
     selection: "A1",
-    data: {},
+    cells: {},
   };
 
   spreadsheetRef = React.createRef();
@@ -147,11 +147,11 @@ class Spreadsheet extends Component {
   }
 
   updateSelectedCell = (value) => {
-    const {data, selection} = this.state;
+    const {cells, selection} = this.state;
 
     this.setState({
-      data: {
-        ...data,
+      cells: {
+        ...cells,
         [selection]: parse(value),
       }
     });
@@ -202,13 +202,13 @@ class Spreadsheet extends Component {
   }
 
   render() {
-    const {selection, data} = this.state;
+    const {selection, cells} = this.state;
 
     return (
       <div className="app">
         <FormulaEditor
           onChange={this.updateSelectedCell}
-          formula={data[selection] || ""}
+          formula={cells[selection] || ""}
           selection={selection}
           ref={this.editorRef}
           onKeyDown={this.handleFormulaEditorKeyDown}
@@ -239,7 +239,7 @@ class Spreadsheet extends Component {
                       name={`${c}${r}`}
                       selection={selection}
                       onClick={this.selectCell}
-                      value={data[`${c}${r}`] && data[`${c}${r}`].eval()}
+                      value={cells[`${c}${r}`] && cells[`${c}${r}`].eval(`${c}${r}`, cells)}
                     />
                   ))
                 }

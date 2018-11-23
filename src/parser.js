@@ -54,50 +54,56 @@ class BinOp {
 }
 
 class Plus extends BinOp {
-  eval() {
-    return this.left.eval() + this.right.eval();
+  eval(name, cells) {
+    return this.left.eval(name, cells) + this.right.eval(name, cells);
   }
 }
 
 class Minus extends BinOp {
-  eval() {
-    return this.left.eval() - this.right.eval();
+  eval(name, cells) {
+    return this.left.eval(name, cells) - this.right.eval(name, cells);
   }
 }
 
 class Times extends BinOp {
-  eval() {
-    return this.left.eval() * this.right.eval();
+  eval(name, cells) {
+    return this.left.eval(name, cells) * this.right.eval(name, cells);
   }
 }
 
 class Divide extends BinOp {
-  eval() {
-    return this.left.eval() / this.right.eval();
+  eval(name, cells) {
+    return this.left.eval(name, cells) / this.right.eval(name, cells);
   }
 }
 
 class Pow extends BinOp {
-  eval() {
-    return this.left.eval() ** this.right.eval();
+  eval(name, cells) {
+    return this.left.eval(name, cells) ** this.right.eval(name, cells);
   }
 }
 
 class Neg extends UnOp {
-  eval() {
-    return -1 * this.child.eval();
+  eval(name, cells) {
+    return -1 * this.child.eval(name, cells);
   }
 }
 
 class Num extends UnOp {
-  eval() {
+  eval(name, cells) {
     return this.child;
   }
 }
 
 class CellRef extends UnOp {
-  eval() {
-    throw 'not implemented';
+  eval(name, cells) {
+    if (name === this.child) {
+      return "#REF!";
+    }
+
+    const cell = cells[this.child];
+
+    return cell ? cell.eval(name, cells) : 0;
   }
 }
 
@@ -148,7 +154,7 @@ class Value {
     this.src = src;
   }
 
-  eval() {
+  eval(name, cells) {
     if (this.src.match(/^\d+(\.\d+)?$/)) {
       return parseFloat(this.src);
     } else {
@@ -163,9 +169,9 @@ class Formula {
     this.match = match;
   }
 
-  eval() {
+  eval(name, cells) {
     if (this.match.succeeded()) {
-      return formulaSemantics(this.match).toAst().eval();
+      return formulaSemantics(this.match).toAst().eval(name, cells);
     } else {
       return "#ERROR!";
     }
