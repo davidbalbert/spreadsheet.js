@@ -10,20 +10,20 @@
 }
 
 .spreadsheet__cell {
-  border-top: 1px solid black;
-  border-left: 1px solid black;
+  border-top: 1px solid #999;
+  border-left: 1px solid #999;
   width: 50px;
   flex: 1;
   padding: 0 1px;
 
   &:last-child {
-    border-right: 1px solid black;
+    border-right: 1px solid #999;
   }
 }
 
 .spreadsheet__row:last-child {
   .spreadsheet__cell {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #999;
   }
 }
 
