@@ -1,6 +1,6 @@
 # spreadsheet.js
 
-A simple spreadsheet using React and [ohm](https://github.com/harc/ohm/). Supports arithmetic formulas including cell references (e.g. `= A1 + B2`), and keyboard navigation.
+A simple spreadsheet in the browser. Supports arithmetic formulas including cell references (e.g. `= A1 + B2`), and keyboard navigation.
 
 ## Running
 
