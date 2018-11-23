@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import ohm from 'ohm-js';
 import _ from 'underscore';
 
 import './App.scss'
 import './Spreadsheet.scss';
 
 import FormulaEditor from './FormulaEditor';
+import parse from './parser';
 
 function charRange(start, end) {
     const startCode = start.charCodeAt(0);
@@ -25,88 +25,6 @@ function classSet(obj) {
 
   return a.join(' ');
 }
-
-const GRAMMAR_SRC = `
-Formula {
-  Formula
-    = "=" Exp
-
-  Exp
-    = AddExp
-
-  AddExp
-    = AddExp "+" MulExp  -- plus
-    | AddExp "-" MulExp  -- minus
-    | MulExp
-
-  MulExp
-    = MulExp "*" ExpExp  -- times
-    | MulExp "/" ExpExp  -- divide
-    | ExpExp
-
-  ExpExp
-    = PriExp "^" ExpExp  -- power
-    | PriExp
-
-  PriExp
-    = "(" Exp ")"  -- paren
-    | "+" PriExp   -- pos
-    | "-" PriExp   -- neg
-    | ident
-    | number
-
-  ident  (an identifier)
-    = letter alnum*
-
-  number  (a number)
-    = digit* "." digit+  -- fract
-    | digit+             -- whole
-}
-`;
-
-const formulaGrammar = ohm.grammar(GRAMMAR_SRC);
-
-const formulaSemantics = formulaGrammar.createSemantics().addOperation('eval', {
-  Formula: function(eq, e) {
-    return e.eval();
-  },
-  Exp: function(e) {
-    return e.eval();
-  },
-  AddExp: function(e) {
-    return e.eval();
-  },
-  AddExp_plus: function(left, op, right) {
-    return left.eval() + right.eval();
-  },
-  AddExp_minus: function(left, op, right) {
-    return left.eval() - right.eval();
-  },
-  MulExp_times: function(left, op, right) {
-    return left.eval() * right.eval();
-  },
-  MulExp_divide: function(left, op, right) {
-    return left.eval() / right.eval();
-  },
-  ExpExp_power: function(left, op, right) {
-    return left.eval() ** right.eval();
-  },
-  PriExp: function(e) {
-    return e.eval();
-  },
-  PriExp_paren: function(open, exp, close) {
-    return exp.eval();
-  },
-  PriExp_neg: function(op, e) {
-    return -1 * e.eval();
-  },
-  PriExp_pos: function(op, e) {
-    return e.eval();
-  },
-  number: function(chars) {
-    return parseInt(this.sourceString, 10);
-  },
-});
 
 class Cell extends Component {
   handleClick = (e) => {
@@ -137,35 +55,6 @@ class Cell extends Component {
         {value}
       </div>
     )
-  }
-}
-
-class Value {
-  constructor(src) {
-    this.src = src;
-  }
-
-  get val() {
-    if (this.src.match(/^\d+(\.\d+)?$/)) {
-      return parseFloat(this.src);
-    } else {
-      return this.src;
-    }
-  }
-}
-
-class Formula {
-  constructor(src, match) {
-    this.src = src;
-    this.match = match;
-  }
-
-  get val() {
-    if (this.match.succeeded()) {
-      return formulaSemantics(this.match).eval();
-    } else {
-      return "#ERROR!";
-    }
   }
 }
 
@@ -260,19 +149,10 @@ class Spreadsheet extends Component {
   updateSelectedCell = (value) => {
     const {data, selection} = this.state;
 
-    let cell;
-    if (value === null) {
-      cell = null;
-    } else if (value[0] === '=') {
-      cell = new Formula(value, formulaGrammar.match(value));
-    } else {
-      cell = new Value(value);
-    }
-
     this.setState({
       data: {
         ...data,
-        [selection]: cell,
+        [selection]: parse(value),
       }
     });
   }
