@@ -154,7 +154,7 @@ class Value {
   }
 
   get val() {
-    if (this.src.match(/^\d+(.\d+)?$/)) {
+    if (this.src.match(/^\d+(\.\d+)?$/)) {
       return parseFloat(this.src);
     } else {
       return this.src;
