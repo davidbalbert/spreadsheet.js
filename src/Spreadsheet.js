@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ohm from 'ohm-js';
 import _ from 'underscore';
 
+import './App.scss'
 import './Spreadsheet.scss';
 
 import FormulaEditor from './FormulaEditor';
