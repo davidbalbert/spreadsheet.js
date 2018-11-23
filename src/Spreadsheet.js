@@ -168,7 +168,7 @@ class Formula {
   }
 }
 
-const ROWS = _.range(1, 51);
+const ROWS = _.range(1, 33);
 const COLS = charRange('A', 'Z');
 
 // does not support multiple character columns (AA, AB, AC, etc.)
@@ -244,10 +244,11 @@ class Spreadsheet extends Component {
     data: {},
   };
 
-  rootRef = React.createRef();
+  spreadsheetRef = React.createRef();
+  editorRef = React.createRef();
 
   componentDidMount() {
-    this.rootRef.current.focus();
+    this.spreadsheetRef.current.focus();
   }
 
   selectCell = (name) => {
@@ -298,6 +299,18 @@ class Spreadsheet extends Component {
           selection: moveSelection(selection, 'down'),
         });
         break;
+      case Keys.ENTER:
+        this.editorRef.current.focus();
+        break;
+    }
+  }
+
+  handleFormulaEditorKeyDown = (e) => {
+    switch (e.keyCode) {
+      case Keys.ENTER:
+      case Keys.ESC:
+        this.spreadsheetRef.current.focus();
+        break;
     }
   }
 
@@ -310,12 +323,14 @@ class Spreadsheet extends Component {
           onChange={this.updateSelectedCell}
           formula={data[selection] || ""}
           selection={selection}
+          ref={this.editorRef}
+          onKeyDown={this.handleFormulaEditorKeyDown}
         />
         <div
           className="spreadsheet"
           tabIndex="0"
           onKeyDown={this.handleKeyDown}
-          ref={this.rootRef}
+          ref={this.spreadsheetRef}
         >
           <div className="spreadsheet__row">
             <Cell header />
