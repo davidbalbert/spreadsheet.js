@@ -126,14 +126,14 @@ class Cell extends Component {
   }
 
   render() {
-    const {header, value, selected} = this.props;
+    const {header, value, selection, name} = this.props;
 
     const number = value && typeof value === "number";
 
     const className = classSet({
       'spreadsheet__cell': true,
       'spreadsheet__cell--header': header,
-      'spreadsheet__cell--selected': selected,
+      'spreadsheet__cell--selected': selection && name === selection,
       'spreadsheet__cell--number': number && !header,
     });
 
@@ -236,7 +236,7 @@ class Spreadsheet extends Component {
                   <Cell
                     key={`${c}${r}`}
                     name={`${c}${r}`}
-                    selected={selection === `${c}${r}`}
+                    selection={selection}
                     onClick={this.selectCell}
                     value={data[`${c}${r}`] && data[`${c}${r}`].val}
                   />
