@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import './Spreadsheet.css';
+import './Spreadsheet.scss';
+
+import FormulaEditor from './FormulaEditor';
 
 function range(start, end) {
   let a = [];
@@ -31,31 +33,68 @@ function classSet(obj) {
 }
 
 class Cell extends Component {
+  handleClick = (e) => {
+    const {onClick, name} = this.props;
+
+    if (onClick) {
+      onClick(name);
+    }
+  }
+
   render() {
-    const { header, children } = this.props;
+    const {header, children, selected} = this.props;
 
     const className = classSet({
       'spreadsheet__cell': true,
       'spreadsheet__cell--header': header,
+      'spreadsheet__cell--selected': selected,
     });
 
     return (
-      <div className={className}>{children}</div>
+      <div
+        className={className}
+        onClick={this.handleClick}
+      >
+        {children}
+      </div>
     )
   }
 }
 
-const ROWS = range(1, 100);
+const ROWS = range(1, 50);
 const COLS = charRange('A', 'Z');
 
 class Spreadsheet extends Component {
   state = {
-    data: [1,2,3],
+    selection: null,
+    data: {},
   };
 
+  selectCell = (name) => {
+    this.setState({selection: name});
+  }
+
+  updateSelectedCell = (value) => {
+    const {data, selection} = this.state;
+
+    this.setState({
+      data: {
+        ...data,
+        [selection]: value,
+      }
+    });
+  }
+
   render() {
+    const {selection, data} = this.state;
+
     return (
       <div className="spreadsheet">
+        <FormulaEditor
+          onChange={this.updateSelectedCell}
+          value={data[selection] || ""}
+          selection={selection}
+        />
         <div className="spreadsheet__row">
           <Cell header />
           {
@@ -71,7 +110,14 @@ class Spreadsheet extends Component {
               <Cell header>{r}</Cell>
               {
                 COLS.map(c => (
-                  <Cell key={`${c}${r}`} />
+                  <Cell
+                    key={`${c}${r}`}
+                    name={`${c}${r}`}
+                    selected={selection === `${c}${r}`}
+                    onClick={this.selectCell}
+                  >
+                    {data[`${c}${r}`]}
+                  </Cell>
                 ))
               }
             </div>

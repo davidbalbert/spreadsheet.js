@@ -1,13 +1,9 @@
 .spreadsheet {
-
 }
 
 .spreadsheet__row {
   display: flex;
-}
-
-.spreadsheet__row:last-child {
-  border-bottom: 1px solid black;
+  user-select: none;
 }
 
 .spreadsheet__cell {
@@ -15,12 +11,22 @@
   border-left: 1px solid black;
   width: 50px;
   text-align: center;
+
+  &:last-child {
+    border-right: 1px solid black;
+  }
 }
 
-.spreadsheet__cell:last-child {
-  border-right: 1px solid black;
+.spreadsheet__row:last-child {
+  .spreadsheet__cell {
+    border-bottom: 1px solid black;
+  }
 }
 
 .spreadsheet__cell--header {
   background-color: #ddd;
+}
+
+.spreadsheet__cell--selected {
+  background-color: #ccf;
 }
