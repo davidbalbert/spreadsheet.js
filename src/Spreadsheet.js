@@ -236,6 +236,7 @@ const Keys = {
 
   ENTER: 13,
   ESC: 27,
+  DEL: 8,
 };
 
 class Spreadsheet extends Component {
@@ -259,7 +260,9 @@ class Spreadsheet extends Component {
     const {data, selection} = this.state;
 
     let cell;
-    if (value[0] === '=') {
+    if (value === null) {
+      cell = null;
+    } else if (value[0] === '=') {
       cell = new Formula(value, formulaGrammar.match(value));
     } else {
       cell = new Value(value);
@@ -301,6 +304,9 @@ class Spreadsheet extends Component {
         break;
       case Keys.ENTER:
         this.editorRef.current.focus();
+        break;
+      case Keys.DEL:
+        this.updateSelectedCell(null);
         break;
     }
   }
