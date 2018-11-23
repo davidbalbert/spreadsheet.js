@@ -8,7 +8,7 @@ class FormulaEditor extends Component {
     onChange(e.target.value);
   }
   render() {
-    const {selection, value} = this.props;
+    const {selection, formula} = this.props;
 
     return (
       <div className="formula-editor">
@@ -16,7 +16,7 @@ class FormulaEditor extends Component {
           className="formula-editor__input"
           disabled={!selection}
           onChange={this.handleInputChange}
-          value={value}
+          value={formula.src || ""}
         />
       </div>
     );
