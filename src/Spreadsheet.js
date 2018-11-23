@@ -40,11 +40,19 @@ class Cell extends Component {
 
     const number = value && typeof value === "number";
 
+    let highlighted = false;
+    if (header && selection) {
+      const [row, col] = splitName(selection);
+
+      highlighted = row === name || col === name;
+    }
+
     const className = classSet({
       'spreadsheet__cell': true,
       'spreadsheet__cell--header': header,
-      'spreadsheet__cell--selected': selection && name === selection,
       'spreadsheet__cell--number': number && !header,
+      'spreadsheet__cell--selected': selection && name === selection,
+      'spreadsheet__cell--highlighted': highlighted,
     });
 
     return (
@@ -94,14 +102,24 @@ function prevRow(r) {
   }
 }
 
-function moveSelection(currentSelection, direction) {
-  const match = currentSelection.match(/([A-Z]+)(\d+)/);
+function splitName(name) {
+  const match = name.match(/([A-Z]+)(\d+)/);
 
   if (!match) {
+    return null;
+  }
+
+  return [match[1], parseInt(match[2], 10)];
+}
+
+function moveSelection(currentSelection, direction) {
+  const pair = splitName(currentSelection);
+
+  if (pair === null) {
     return currentSelection;
   }
 
-  const [col, row] = [match[1], parseInt(match[2], 10)];
+  const [col, row] = pair;
 
   switch (direction) {
     case 'up':
@@ -223,7 +241,13 @@ class Spreadsheet extends Component {
             <Cell header />
             {
               COLS.map(c => (
-                <Cell key={c} value={c} header />
+                <Cell
+                  key={c}
+                  value={c}
+                  name={c}
+                  selection={selection}
+                  header
+                />
               ))
             }
           </div>
@@ -231,7 +255,12 @@ class Spreadsheet extends Component {
           {
             ROWS.map(r => (
               <div key={r} className="spreadsheet__row">
-                <Cell value={r} header />
+                <Cell
+                  value={r}
+                  name={r}
+                  selection={selection}
+                  header
+                />
                 {
                   COLS.map(c => (
                     <Cell

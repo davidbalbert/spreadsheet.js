@@ -36,6 +36,10 @@
   text-align: right;
 }
 
+.spreadsheet__cell--highlighted {
+  background-color: #aaa;
+}
+
 .spreadsheet__cell--selected {
   background-color: #ccf;
 }
