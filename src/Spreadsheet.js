@@ -1,25 +1,16 @@
 import React, { Component } from 'react';
 import ohm from 'ohm-js';
+import _ from 'underscore';
 
 import './Spreadsheet.scss';
 
 import FormulaEditor from './FormulaEditor';
 
-function range(start, end) {
-  let a = [];
-
-  for (let i = start; i < end + 1; i++) {
-    a.push(i);
-  }
-
-  return a;
-}
-
 function charRange(start, end) {
     const startCode = start.charCodeAt(0);
-    const endCode = end.charCodeAt(0)
+    const endCode = end.charCodeAt(0) + 1;
 
-    return range(startCode, endCode).map(n => String.fromCharCode(n));
+    return _.range(startCode, endCode).map(n => String.fromCharCode(n));
 }
 
 function classSet(obj) {
@@ -177,8 +168,75 @@ class Formula {
   }
 }
 
-const ROWS = range(1, 50);
+const ROWS = _.range(1, 51);
 const COLS = charRange('A', 'Z');
+
+// does not support multiple character columns (AA, AB, AC, etc.)
+function nextCol(c) {
+  if (c === _.last(COLS)) {
+    return c;
+  } else {
+    return String.fromCharCode(c.charCodeAt(0) + 1);
+  }
+}
+
+function prevCol(c) {
+  if (c === COLS[0]) {
+    return c;
+  } else {
+    return String.fromCharCode(c.charCodeAt(0) - 1);
+  }
+}
+
+function nextRow(r) {
+  if (r === _.last(ROWS)) {
+    return r;
+  } else {
+    return r + 1;
+  }
+}
+
+function prevRow(r) {
+  if (r === ROWS[0]) {
+    return r;
+  } else {
+    return r - 1;
+  }
+}
+
+function moveSelection(currentSelection, direction) {
+  const match = currentSelection.match(/([A-Z]+)(\d+)/);
+
+  if (!match) {
+    return currentSelection;
+  }
+
+  const [col, row] = [match[1], parseInt(match[2], 10)];
+
+  switch (direction) {
+    case 'up':
+      return `${col}${prevRow(row)}`;
+    case 'down':
+      return `${col}${nextRow(row)}`;
+    case 'right':
+      return `${nextCol(col)}${row}`;
+    case 'left':
+      return `${prevCol(col)}${row}`;
+    default:
+      return currentSelection;
+  }
+
+}
+
+const Keys = {
+  LEFT: 37,
+  RIGHT: 39,
+  UP: 38,
+  DOWN: 40,
+
+  ENTER: 13,
+  ESC: 27,
+};
 
 class Spreadsheet extends Component {
   state = {
@@ -208,11 +266,44 @@ class Spreadsheet extends Component {
     });
   }
 
+  handleKeyDown = (e) => {
+    const {selection} = this.state;
+
+    e.preventDefault();
+
+    switch (e.keyCode) {
+      case Keys.RIGHT:
+        this.setState({
+          selection: moveSelection(selection, 'right'),
+        });
+        break;
+      case Keys.LEFT:
+        this.setState({
+          selection: moveSelection(selection, 'left'),
+        });
+        break;
+      case Keys.UP:
+        this.setState({
+          selection: moveSelection(selection, 'up'),
+        })
+        break;
+      case Keys.DOWN:
+        this.setState({
+          selection: moveSelection(selection, 'down'),
+        });
+        break;
+    }
+  }
+
   render() {
     const {selection, data} = this.state;
 
     return (
-      <div className="spreadsheet">
+      <div
+        className="spreadsheet"
+        tabIndex="0"
+        onKeyDown={this.handleKeyDown}
+      >
         <FormulaEditor
           onChange={this.updateSelectedCell}
           formula={data[selection] || ""}

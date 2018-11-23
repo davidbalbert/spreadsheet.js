@@ -8,6 +8,10 @@ body {
 
 .spreadsheet {
   margin: 8px;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .spreadsheet__row {
