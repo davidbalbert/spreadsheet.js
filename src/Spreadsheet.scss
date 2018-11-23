@@ -1,14 +1,4 @@
-*, *:before, *:after {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-}
-
 .spreadsheet {
-  margin: 8px;
-
   &:focus {
     outline: none;
   }

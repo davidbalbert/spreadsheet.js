@@ -244,6 +244,12 @@ class Spreadsheet extends Component {
     data: {},
   };
 
+  rootRef = React.createRef();
+
+  componentDidMount() {
+    this.rootRef.current.focus();
+  }
+
   selectCell = (name) => {
     this.setState({selection: name});
   }
@@ -299,43 +305,46 @@ class Spreadsheet extends Component {
     const {selection, data} = this.state;
 
     return (
-      <div
-        className="spreadsheet"
-        tabIndex="0"
-        onKeyDown={this.handleKeyDown}
-      >
+      <div className="app">
         <FormulaEditor
           onChange={this.updateSelectedCell}
           formula={data[selection] || ""}
           selection={selection}
         />
-        <div className="spreadsheet__row">
-          <Cell header />
+        <div
+          className="spreadsheet"
+          tabIndex="0"
+          onKeyDown={this.handleKeyDown}
+          ref={this.rootRef}
+        >
+          <div className="spreadsheet__row">
+            <Cell header />
+            {
+              COLS.map(c => (
+                <Cell key={c} value={c} header />
+              ))
+            }
+          </div>
+
           {
-            COLS.map(c => (
-              <Cell key={c} value={c} header />
+            ROWS.map(r => (
+              <div key={r} className="spreadsheet__row">
+                <Cell value={r} header />
+                {
+                  COLS.map(c => (
+                    <Cell
+                      key={`${c}${r}`}
+                      name={`${c}${r}`}
+                      selection={selection}
+                      onClick={this.selectCell}
+                      value={data[`${c}${r}`] && data[`${c}${r}`].val}
+                    />
+                  ))
+                }
+              </div>
             ))
           }
         </div>
-
-        {
-          ROWS.map(r => (
-            <div key={r} className="spreadsheet__row">
-              <Cell value={r} header />
-              {
-                COLS.map(c => (
-                  <Cell
-                    key={`${c}${r}`}
-                    name={`${c}${r}`}
-                    selection={selection}
-                    onClick={this.selectCell}
-                    value={data[`${c}${r}`] && data[`${c}${r}`].val}
-                  />
-                ))
-              }
-            </div>
-          ))
-        }
       </div>
     );
   }
