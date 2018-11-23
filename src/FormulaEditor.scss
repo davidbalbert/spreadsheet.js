@@ -13,4 +13,8 @@
   &:focus {
     outline: none;
   }
+
+  &:disabled {
+    border-color: #eee;
+  }
 }

@@ -66,7 +66,7 @@ const COLS = charRange('A', 'Z');
 
 class Spreadsheet extends Component {
   state = {
-    selection: null,
+    selection: "A1",
     data: {},
   };
 
