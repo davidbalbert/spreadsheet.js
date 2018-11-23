@@ -1,0 +1,16 @@
+.formula-editor {
+  display: flex;
+}
+
+.formula-editor__input {
+  flex: 1;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-bottom: none;
+  font-size: 1rem;
+
+  &:focus {
+    outline: none;
+  }
+}

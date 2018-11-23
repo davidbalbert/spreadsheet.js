@@ -1,4 +1,9 @@
+body {
+  margin: 0;
+}
+
 .spreadsheet {
+  margin: 8px;
 }
 
 .spreadsheet__row {
@@ -10,6 +15,7 @@
   border-top: 1px solid black;
   border-left: 1px solid black;
   width: 50px;
+  flex: 1;
   text-align: center;
 
   &:last-child {

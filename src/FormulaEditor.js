@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './FormulaEditor.scss'
 
 class FormulaEditor extends Component {
   handleInputChange = (e) => {
@@ -12,6 +13,7 @@ class FormulaEditor extends Component {
     return (
       <div className="formula-editor">
         <input
+          className="formula-editor__input"
           disabled={!selection}
           onChange={this.handleInputChange}
           value={value}
